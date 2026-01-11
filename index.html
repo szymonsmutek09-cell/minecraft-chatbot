@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Zaawansowany Chatbot</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #e6f2ff; display: flex; justify-content: center; padding: 50px; }
+    .chat-container { width: 450px; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    .messages { height: 350px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 10px; background: #f9f9f9; }
+    .message { margin: 8px 0; padding: 5px 10px; border-radius: 8px; max-width: 80%; }
+    .user { background: #cce5ff; color: #004085; align-self: flex-end; }
+    .bot { background: #d4edda; color: #155724; align-self: flex-start; }
+    .input-row { display: flex; gap: 5px; }
+    input[type=text] { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #ccc; }
+    button { padding: 8px 12px; border-radius: 8px; border: none; background: #007bff; color: #fff; cursor: pointer; }
+    select { padding: 5px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <select id="skillSelect">
+      <option value="neutral">Neutralny</option>
+      <option value="funny">Dowcipny</option>
+      <option value="serious">Poważny</option>
+      <option value="educational">Edukacyjny</option>
+    </select>
+    <div class="messages" id="messages"></div>
+    <div class="input-row">
+      <input type="text" id="userInput" placeholder="Napisz coś...">
+      <button onclick="sendMessage()">Wyślij</button>
+    </div>
+  </div>
+
+  <script>
+    const messagesDiv = document.getElementById('messages');
+    const skillSelect = document.getElementById('skillSelect');
+
+    function addMessage(text, sender) {
+      const msg = document.createElement('div');
+      msg.className = 'message ' + sender;
+      msg.textContent = text;
+      messagesDiv.appendChild(msg);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function getBotReply(userText) {
+      const skill = skillSelect.value;
+      let reply = "";
+
+      switch(skill) {
+        case 'funny':
+          const jokes = [
+            "Haha, dobre pytanie! 😄",
+            "Nie uwierzysz, ale myślę, że to zabawne!",
+            "Okej, ale wyobraź sobie kota w kapeluszu..."
+          ];
+          reply = jokes[Math.floor(Math.random() * jokes.length)];
+          break;
+        case 'serious':
+          reply = "Analizuję twoją wiadomość i oto moje poważne zdanie: " + userText;
+          break;
+        case 'educational':
+          reply = "Ciekawostka: " + userText + " może być tematem naukowym. Spróbuj zgłębić to w książkach.";
+          break;
+        default:
+          reply = "Hmm, rozumiem: " + userText;
+      }
+
+      return reply;
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if(!text) return;
+      addMessage(text, 'user');
+      input.value = '';
+
+      setTimeout(() => {
+        const botReply = getBotReply(text);
+        addMessage(botReply, 'bot');
+      }, 500);
+    }
+
+    document.getElementById('userInput').addEventListener('keydown', function(e) {
+      if(e.key === 'Enter') sendMessage();
+    });
+  </script>
+</body>
+</html>
+
